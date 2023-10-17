@@ -43,7 +43,8 @@ group :development, :test do
   gem "pry"
   gem "factory_bot_rails"
   gem "faker"
-  gem 'simplecov', require: false, group: :test
+  gem "simplecov", require: false, group: :test
+  gem "shoulda-matchers"
 end
 
 group :development do
