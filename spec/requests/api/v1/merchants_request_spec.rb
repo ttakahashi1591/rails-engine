@@ -44,4 +44,29 @@ describe "Merchants API" do
     expect(merchant[:data][:attributes]).to have_key(:name)
     expect(merchant[:data][:attributes][:name]).to be_a(String)
   end
+
+  it "sends a list of merchants items" do
+    id = create(:merchant).id
+    create_list(:item, 5)
+
+    get "/api/v1/merchants/#{id}/items"
+
+    expect(response).to be_successful
+
+    merchants = JSON.parse(response.body, symbolize_names: true)
+
+    expect(merchants[:data].count).to eq(5)
+
+    merchants[:data].each do |merchant|
+      expect(merchants).to have_key(:data)
+      expect(merchants[:data]).to be_an(Array)
+      
+      expect(merchant).to have_key(:id)
+      expect(merchant[:id]).to be_an(String)
+
+      expect(merchant).to have_key(:attributes)
+      expect(merchant[:attributes]).to have_key(:name)
+      expect(merchant[:attributes][:name]).to be_a(String)
+    end
+  end
 end
