@@ -3,6 +3,7 @@ FactoryBot.define do
     name { Faker::Dessert.variety }
     description { Faker::Dessert.flavor }
     unit_price { Faker::Number.between(from: 1, to: 10) }
-    merchant_id { Faker::Number.between(from: 1, to: 1000).unique }
+
+    association :merchant, factory: :merchant
   end
 end
