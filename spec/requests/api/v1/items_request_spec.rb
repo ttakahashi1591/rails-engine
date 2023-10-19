@@ -90,6 +90,33 @@ describe "Items API" do
     expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
   end
 
+  it "can update an existing item" do
+    id = create(:item).id
+    previous_name = Item.last.name
+    item_params = { name: "Cream Pie" }
+    headers = {"CONTENT_TYPE" => "application/json"}
+  
+    patch "/api/v1/items/#{id}", headers: headers, params: JSON.generate({item: item_params})
+    item = Item.find_by(id: id)
+  
+    expect(response).to be_successful
+    expect(item.name).to_not eq(previous_name)
+    expect(item.name).to eq("Cream Pie")
+  end
+
+  it "returns a 400 status code when item update fails" do
+    item = create(:item)
+    item_params = { name: nil } 
+
+    headers = { "CONTENT_TYPE" => "application/json" }
+  
+    patch "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate({ item: item_params })
+  
+    expect(response.status).to eq(400) 
+
+    expect(JSON.parse(response.body)["errors"]).to be_present 
+  end
+
   it "sends a list of merchants items" do
     merchant = create(:merchant)
     item = create(:item, merchant: merchant)
