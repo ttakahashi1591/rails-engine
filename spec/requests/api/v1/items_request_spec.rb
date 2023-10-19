@@ -103,4 +103,17 @@ describe "Items API" do
     expect(item.name).to_not eq(previous_name)
     expect(item.name).to eq("Cream Pie")
   end
+
+  it "returns a 400 status code when item update fails" do
+    item = create(:item)
+    item_params = { name: nil } 
+
+    headers = { "CONTENT_TYPE" => "application/json" }
+  
+    patch "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate({ item: item_params })
+  
+    expect(response.status).to eq(400) 
+
+    expect(JSON.parse(response.body)["errors"]).to be_present 
+  end
 end
