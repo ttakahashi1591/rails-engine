@@ -116,4 +116,24 @@ describe "Items API" do
 
     expect(JSON.parse(response.body)["errors"]).to be_present 
   end
+
+  it "provides an items merchants" do
+    merchant = create(:merchant)
+    item = create(:item, merchant: merchant)
+  
+    get "/api/v1/merchants/#{merchant.id}/items"
+  
+    expect(response).to be_successful
+  
+    merchants = JSON.parse(response.body, symbolize_names: true)
+  
+    expect(merchants[:data].count).to eq(1)
+  
+    expect(merchant).to respond_to(:id)
+  
+    merchants[:data].each do |merchant_data|
+      expect(merchant_data).to have_key(:id)
+      expect(merchant_data[:id]).to be_an(String)
+    end
+  end
 end
